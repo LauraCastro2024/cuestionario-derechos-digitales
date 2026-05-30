@@ -1,481 +1,520 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación final — Derechos digitales y economía digital</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --m:#302b5f;--mc:#3e3878;--mo:#1e1a3d;
   --ac:#c8b8ff;--ac2:#f0eb6e;
   --bl:#f5f2fb;--mu:rgba(200,184,255,0.45);
   --bo:rgba(200,184,255,0.15);
-  --ok:#4caf7d;--err:#e05c5c;--warn:#f0ab3d;
+  --ok:#4caf7d;--err:#e05c5c;
 }
-body{background:var(--mo);color:var(--bl);font-family:'DM Sans',sans-serif;min-height:100vh;padding:2rem 1rem}
-
-.wrap{max-width:720px;margin:0 auto}
+html,body{height:100%;background:var(--mo);color:var(--bl);font-family:'DM Sans',sans-serif}
+body{padding:1.5rem 1rem;overflow-x:hidden}
+.wrap{max-width:680px;margin:0 auto}
 
 /* HEADER */
-.header{text-align:center;padding:2.5rem 1rem 2rem;position:relative}
-.header-eye{font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ac);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:10px}
-.header-eye::before,.header-eye::after{content:'';width:28px;height:1px;background:var(--ac)}
-.header h1{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,5vw,3rem);font-weight:800;line-height:1;letter-spacing:-.02em;margin-bottom:1rem}
-.header h1 .pill{background:var(--ac2);color:var(--mo);padding:.02em .15em;border-radius:4px;display:inline-block;transform:rotate(-.5deg)}
-.header-sub{font-size:.9rem;color:var(--mu);line-height:1.7;max-width:480px;margin:0 auto}
+.header{background:#302b5f;padding:2.5rem 2rem 2rem;margin:-1.5rem -1rem 2rem;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.eye{font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#c8b8ff;display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;position:relative;z-index:1}
+.eye::before{content:'■';color:#c8b8ff;font-size:8px}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,7vw,4rem);font-weight:800;line-height:.95;letter-spacing:-.02em;color:#ffffff;margin-bottom:.5rem;position:relative;z-index:1}
+h1 .lila{color:#c8b8ff;font-weight:800}
+.pill{display:inline-block;background:#f0eb6e;color:#000000;padding:.05em .25em;border-radius:0;font-weight:800}
+.hsub{font-size:.85rem;color:rgba(200,184,255,0.6);line-height:1.7;max-width:440px;margin:.75rem 0 0;position:relative;z-index:1}
 
-/* BARRA PROGRESO */
-.progreso-wrap{margin:1.5rem 0;background:rgba(200,184,255,0.08);border:1px solid var(--bo);border-radius:8px;padding:1rem 1.25rem}
-.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
-.prog-label{font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ac)}
-.prog-count{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--bl)}
-.prog-bar-bg{height:4px;background:var(--bo);border-radius:2px;overflow:hidden}
-.prog-bar{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:2px;transition:width .5s ease;width:0%}
+/* PROGRESO */
+.prog-wrap{margin:0 0 1.5rem;background:rgba(200,184,255,0.07);border:1px solid var(--bo);border-radius:8px;padding:.9rem 1.2rem}
+.prog-top{display:flex;justify-content:space-between;margin-bottom:.5rem;font-family:'Syne',sans-serif;font-size:.78rem}
+.prog-label{color:var(--ac);letter-spacing:.12em;text-transform:uppercase}
+.prog-num{color:var(--bl);font-weight:700}
+.prog-bg{height:3px;background:var(--bo);border-radius:2px;overflow:hidden}
+.prog-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:2px;transition:width .5s ease}
 
-/* TARJETA PREGUNTA */
-.q-card{
-  background:var(--m);border:1px solid var(--bo);border-radius:10px;
-  padding:2rem;margin-bottom:1rem;
-  display:none;
-  animation:fadeIn .4s ease;
-}
-.q-card.active{display:block}
+/* PANTALLAS */
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .35s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.5rem}
-.q-num-badge{font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ac);background:rgba(200,184,255,0.1);border:1px solid var(--bo);padding:3px 10px;border-radius:20px}
-.q-tipo{font-size:10px;color:var(--mu);letter-spacing:.1em;text-transform:uppercase}
-
-.q-texto{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:600;line-height:1.45;margin-bottom:1.5rem;color:var(--bl)}
-
-/* CASO / CONTEXTO */
-.q-caso{
-  background:rgba(200,184,255,0.05);border-left:2px solid var(--ac);
-  border-radius:0 6px 6px 0;padding:.9rem 1.1rem;
-  margin-bottom:1.25rem;font-size:.85rem;
-  font-style:italic;color:rgba(200,184,255,0.75);line-height:1.65;
-}
+/* TARJETA PREGUNTA */
+.qcard{background:var(--m);border:1px solid var(--bo);border-radius:10px;padding:1.6rem;margin-bottom:1rem}
+.qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem;flex-wrap:wrap;gap:.4rem}
+.qbadge{font-family:'Syne',sans-serif;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--ac);background:rgba(200,184,255,0.1);border:1px solid var(--bo);padding:3px 9px;border-radius:20px}
+.qtipo{font-size:9px;color:var(--mu);letter-spacing:.1em;text-transform:uppercase}
+.qtexto{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;line-height:1.45;margin-bottom:1.1rem;color:var(--bl)}
+.qcaso{background:rgba(200,184,255,0.05);border-left:2px solid var(--ac);border-radius:0 6px 6px 0;padding:.75rem .95rem;margin-bottom:1rem;font-size:.8rem;font-style:italic;color:rgba(200,184,255,0.75);line-height:1.6}
 
 /* OPCIONES */
-.opciones{display:flex;flex-direction:column;gap:.6rem}
-.opcion{
-  display:flex;align-items:flex-start;gap:.9rem;
-  padding:.9rem 1rem;
-  background:rgba(200,184,255,0.04);border:1.5px solid var(--bo);
+.ops{display:flex;flex-direction:column;gap:.5rem}
+.op{
+  display:flex;align-items:flex-start;gap:.75rem;
+  padding:.8rem .9rem;
+  background:rgba(200,184,255,0.04);
+  border:1.5px solid var(--bo);
   border-radius:6px;cursor:pointer;
-  transition:background .2s,border-color .2s;
-  font-size:.88rem;color:rgba(200,184,255,0.8);line-height:1.5;
+  transition:background .18s,border-color .18s,transform .1s;
+  font-size:.84rem;color:rgba(200,184,255,0.8);line-height:1.5;
   user-select:none;
 }
-.opcion:hover:not(.disabled){background:rgba(200,184,255,0.09);border-color:rgba(200,184,255,0.3)}
-.opcion.disabled{cursor:default}
-.opcion.correcta{background:rgba(76,175,125,0.12);border-color:rgba(76,175,125,0.5);color:var(--bl)}
-.opcion.incorrecta{background:rgba(224,92,92,0.1);border-color:rgba(224,92,92,0.4);color:rgba(245,242,251,0.6)}
-.opcion.marcada-ok{background:rgba(76,175,125,0.18);border-color:var(--ok)}
-.opcion.marcada-err{background:rgba(224,92,92,0.18);border-color:var(--err)}
+.op:hover:not(.disabled){background:rgba(200,184,255,0.09);border-color:rgba(200,184,255,0.3);transform:translateX(2px)}
+.op.selected{background:rgba(200,184,255,0.12);border-color:var(--ac);color:var(--bl)}
+.op.disabled{cursor:default}
+.op.correcta{background:rgba(76,175,125,0.15);border-color:var(--ok);color:var(--bl)}
+.op.incorrecta-sel{background:rgba(224,92,92,0.15);border-color:var(--err);color:rgba(245,242,251,0.7)}
 
-.opcion-letra{
-  min-width:24px;height:24px;border-radius:50%;
+.letra{
+  min-width:22px;height:22px;border-radius:50%;
   background:rgba(200,184,255,0.1);border:1px solid var(--bo);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;
+  font-family:'Syne',sans-serif;font-size:9px;font-weight:700;
   color:var(--ac);flex-shrink:0;margin-top:1px;
   transition:background .2s,border-color .2s,color .2s;
 }
-.opcion.marcada-ok .opcion-letra{background:var(--ok);border-color:var(--ok);color:#fff}
-.opcion.marcada-err .opcion-letra{background:var(--err);border-color:var(--err);color:#fff}
-.opcion.correcta .opcion-letra{background:rgba(76,175,125,0.3);border-color:var(--ok);color:var(--ok)}
+.op.selected .letra{background:var(--ac);border-color:var(--ac);color:var(--mo)}
+.op.correcta .letra{background:var(--ok);border-color:var(--ok);color:#fff}
+.op.incorrecta-sel .letra{background:var(--err);border-color:var(--err);color:#fff}
 
-/* RETROALIMENTACIÓN */
-.retro{
-  margin-top:1.25rem;border-radius:6px;padding:1rem 1.1rem;
-  font-size:.83rem;line-height:1.65;display:none;
-}
+/* RETRO */
+.retro{margin-top:1rem;border-radius:6px;padding:.85rem 1rem;display:none;font-size:.8rem;line-height:1.65}
 .retro.ok{background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.3);color:#a8e6c8}
 .retro.err{background:rgba(224,92,92,0.1);border:1px solid rgba(224,92,92,0.3);color:#f5a0a0}
-.retro-titulo{font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;margin-bottom:.4rem}
+.retro-t{font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;margin-bottom:.3rem}
 
-/* BTN SIGUIENTE */
-.btn-sig{
-  margin-top:1.25rem;width:100%;
-  background:var(--ac);color:var(--mo);
-  border:none;border-radius:6px;padding:.85rem;
-  font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;
+/* BOTONES */
+.btn-row{margin-top:1.25rem;display:flex;gap:.75rem;justify-content:flex-end}
+.btn{
+  padding:.75rem 1.6rem;border:none;border-radius:6px;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;
   letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
-  transition:transform .15s,box-shadow .15s;display:none;
+  transition:transform .15s,box-shadow .15s,opacity .15s;
 }
-.btn-sig:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(200,184,255,.2)}
+.btn:disabled{opacity:.35;cursor:default;transform:none !important}
+.btn-confirmar{background:var(--ac);color:var(--mo)}
+.btn-confirmar:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(200,184,255,.2)}
+.btn-siguiente{background:var(--mc);color:var(--bl);border:1px solid rgba(200,184,255,0.2);display:none}
+.btn-siguiente:hover{transform:translateY(-2px)}
+.btn-resultado{background:var(--ac2);color:var(--mo);display:none}
+.btn-resultado:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(240,235,110,.2)}
 
-/* RESULTADO FINAL */
-.resultado{display:none;text-align:center;padding:3rem 1rem;animation:fadeIn .5s ease}
+/* RESULTADO */
+.res-hero{text-align:center;padding:2.5rem 1rem}
 .res-circulo{
-  width:120px;height:120px;border-radius:50%;
+  width:110px;height:110px;border-radius:50%;
   border:3px solid var(--ac2);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  margin:0 auto 2rem;
-  background:rgba(240,235,110,0.08);
+  margin:0 auto 1.5rem;background:rgba(240,235,110,0.07);
 }
-.res-pts{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--ac2);line-height:1}
-.res-total{font-size:.75rem;color:var(--mu);margin-top:2px}
-.res-titulo{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:.75rem}
-.res-mensaje{font-size:.9rem;color:var(--mu);line-height:1.7;max-width:420px;margin:0 auto 2rem}
-.res-breakdown{background:var(--m);border:1px solid var(--bo);border-radius:8px;padding:1.25rem;max-width:460px;margin:0 auto 2rem;text-align:left}
-.rb-titulo{font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ac);margin-bottom:1rem}
-.rb-item{display:flex;justify-content:space-between;align-items:center;font-size:.82rem;padding:.5rem 0;border-bottom:1px solid var(--bo)}
-.rb-item:last-child{border-bottom:none}
-.rb-item-label{color:var(--mu)}
-.rb-item-val{font-family:'Syne',sans-serif;font-weight:700}
-.rb-item-val.ok{color:var(--ok)}
-.rb-item-val.err{color:var(--err)}
-.btn-reiniciar{
-  background:transparent;color:var(--bl);
-  border:1.5px solid var(--bo);border-radius:6px;
-  padding:.85rem 2rem;
-  font-family:'Syne',sans-serif;font-weight:600;font-size:.82rem;
-  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
-  transition:border-color .2s;
-}
+.res-pts{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--ac2);line-height:1}
+.res-de{font-size:.72rem;color:var(--mu);margin-top:2px}
+.res-titulo{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:.65rem}
+.res-msg{font-size:.87rem;color:var(--mu);line-height:1.7;max-width:400px;margin:0 auto 2rem}
+
+.detalle{background:var(--m);border:1px solid var(--bo);border-radius:8px;overflow:hidden;max-width:520px;margin:0 auto 2rem}
+.det-header{font-family:'Syne',sans-serif;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ac);padding:.85rem 1.25rem;border-bottom:1px solid var(--bo)}
+.det-item{display:flex;justify-content:space-between;align-items:center;padding:.65rem 1.25rem;border-bottom:1px solid var(--bo);font-size:.82rem}
+.det-item:last-child{border-bottom:none}
+.det-q{color:var(--mu)}
+.det-ok{color:var(--ok);font-family:'Syne',sans-serif;font-weight:700}
+.det-err{color:var(--err);font-family:'Syne',sans-serif;font-weight:700}
+
+.btn-reiniciar{background:transparent;color:var(--bl);border:1.5px solid var(--bo);border-radius:6px;padding:.75rem 1.75rem;font-family:'Syne',sans-serif;font-weight:600;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:border-color .2s;margin-top:.5rem}
 .btn-reiniciar:hover{border-color:rgba(200,184,255,.5)}
+
+.footer{text-align:center;padding:1.5rem 1rem;border-top:1px solid var(--bo);margin-top:1rem;font-size:.75rem;color:var(--mu)}
 </style>
 </head>
 <body>
+
 <div class="wrap">
 
   <div class="header">
-    <div class="header-eye">Evaluación final · Tema 5</div>
-    <h1>Derechos digitales y economía digital</span></h1>
-    <p class="header-sub">10 preguntas · cada una vale 1 punto · retroalimentación inmediata en cada respuesta</p>
+    <div class="eye">Módulo evaluación final · Tema 5</div>
+    <h1>
+      Derechos<br>
+      <span class="lila">digitales</span> &amp;<br>
+      <span class="pill">economía digital</span>
+    </h1>
+    <p class="hsub">10 preguntas · seleccioná tu respuesta y confirmá · las respuestas se muestran al finalizar</p>
   </div>
 
-  <div class="progreso-wrap">
+  <div class="prog-wrap">
     <div class="prog-top">
       <span class="prog-label">Progreso</span>
-      <span class="prog-count" id="progCount">Pregunta 1 de 10</span>
+      <span class="prog-num" id="progNum">Pregunta 1 de 10</span>
     </div>
-    <div class="prog-bar-bg"><div class="prog-bar" id="progBar"></div></div>
+    <div class="prog-bg"><div class="prog-bar" id="progBar"></div></div>
   </div>
 
-  <!-- ========== PREGUNTAS ========== -->
-
-  <!-- P1 -->
-  <div class="q-card active" id="q1">
-    <div class="q-meta"><span class="q-num-badge">Pregunta 1</span><span class="q-tipo">Opción múltiple</span></div>
-    <div class="q-texto">Una imagen publicada en internet sin ninguna indicación de licencia, ¿se puede usar libremente en cualquier contexto?</div>
-    <div class="opciones">
-      <div class="opcion" onclick="responder(1,this,'A',false)"><div class="opcion-letra">A</div>Sí, si está publicada en internet es de acceso libre y puede usarse sin restricciones.</div>
-      <div class="opcion" onclick="responder(1,this,'B',false)"><div class="opcion-letra">B</div>Sí, siempre que no se modifique y se use con fines educativos.</div>
-      <div class="opcion" onclick="responder(1,this,'C',true)"><div class="opcion-letra">C</div>No. Sin indicación de licencia, se presume que tiene todos los derechos reservados y no puede usarse sin permiso.</div>
-      <div class="opcion" onclick="responder(1,this,'D',false)"><div class="opcion-letra">D</div>Depende del tamaño del archivo: si es pequeño, puede usarse.</div>
+  <!-- ===== PREGUNTA 1 ===== -->
+  <div class="screen active" id="s1">
+    <div class="qcard">
+      <div class="qmeta"><span class="qbadge">Pregunta 1</span><span class="qtipo">Opción múltiple</span></div>
+      <div class="qtexto">Una imagen publicada en internet sin ninguna indicación de licencia, ¿se puede usar libremente en cualquier contexto?</div>
+      <div class="ops" id="ops1">
+        <div class="op" onclick="seleccionar(1,this,'A')"><div class="letra">A</div>Sí, si está en internet es de acceso libre y puede usarse sin restricciones.</div>
+        <div class="op" onclick="seleccionar(1,this,'B')"><div class="letra">B</div>Sí, siempre que no se modifique y se use con fines educativos.</div>
+        <div class="op" onclick="seleccionar(1,this,'C')"><div class="letra">C</div>No. Sin licencia explícita se presume que tiene todos los derechos reservados y no puede usarse sin permiso.</div>
+        <div class="op" onclick="seleccionar(1,this,'D')"><div class="letra">D</div>Depende del tamaño del archivo: si es pequeño, puede usarse.</div>
+      </div>
+      <div class="retro" id="ret1"></div>
+      <div class="btn-row">
+        <button class="btn btn-confirmar" id="conf1" onclick="confirmar(1,'C')" disabled>Confirmar</button>
+        <button class="btn btn-siguiente" id="sig1" onclick="irA(2)">Siguiente →</button>
+      </div>
     </div>
-    <div class="retro" id="r1"></div>
-    <button class="btn-sig" id="s1" onclick="siguiente(1)">Siguiente pregunta →</button>
   </div>
 
-  <!-- P2 -->
-  <div class="q-card" id="q2">
-    <div class="q-meta"><span class="q-num-badge">Pregunta 2</span><span class="q-tipo">Caso práctico</span></div>
-    <div class="q-texto">¿Cuál de estas acciones respeta correctamente una licencia CC BY-NC?</div>
-    <div class="q-caso">Un docente encuentra una infografía con licencia CC BY-NC en un repositorio educativo y quiere utilizarla.</div>
-    <div class="opciones">
-      <div class="opcion" onclick="responder(2,this,'A',false)"><div class="opcion-letra">A</div>Publicarla en el sitio de ventas de materiales didácticos del liceo, citando al autor.</div>
-      <div class="opcion" onclick="responder(2,this,'B',true)"><div class="opcion-letra">B</div>Incluirla en una presentación para clase gratuita, mencionando la fuente y el autor.</div>
-      <div class="opcion" onclick="responder(2,this,'C',false)"><div class="opcion-letra">C</div>Modificarla para adaptarla al nivel educativo, citando al autor.</div>
-      <div class="opcion" onclick="responder(2,this,'D',false)"><div class="opcion-letra">D</div>Usarla sin citar, ya que es para uso educativo y eso está siempre permitido.</div>
+  <!-- ===== PREGUNTA 2 ===== -->
+  <div class="screen" id="s2">
+    <div class="qcard">
+      <div class="qmeta"><span class="qbadge">Pregunta 2</span><span class="qtipo">Caso práctico</span></div>
+      <div class="qtexto">Un docente encuentra una infografía con licencia CC BY-NC. ¿Cuál de estas acciones respeta correctamente esa licencia?</div>
+      <div class="qcaso">La infografía está en un repositorio educativo. El docente quiere incluirla en sus materiales de clase.</div>
+      <div class="ops" id="ops2">
+        <div class="op" onclick="seleccionar(2,this,'A')"><div class="letra">A</div>Publicarla en el sitio de ventas de materiales del liceo, citando al autor.</div>
+        <div class="op" onclick="seleccionar(2,this,'B')"><div class="letra">B</div>Incluirla en una presentación para clase gratuita, mencionando la fuente y el autor.</div>
+        <div class="op" onclick="seleccionar(2,this,'C')"><div class="letra">C</div>Modificarla para adaptarla al nivel educativo, citando al autor.</div>
+        <div class="op" onclick="seleccionar(2,this,'D')"><div class="letra">D</div>Usarla sin citar porque el uso educativo siempre está permitido.</div>
+      </div>
+      <div class="retro" id="ret2"></div>
+      <div class="btn-row">
+        <button class="btn btn-confirmar" id="conf2" onclick="confirmar(2,'B')" disabled>Confirmar</button>
+        <button class="btn btn-siguiente" id="sig2" onclick="irA(3)">Siguiente →</button>
+      </div>
     </div>
-    <div class="retro" id="r2"></div>
-    <button class="btn-sig" id="s2" onclick="siguiente(2)">Siguiente pregunta →</button>
   </div>
 
-  <!-- P3 -->
-  <div class="q-card" id="q3">
-    <div class="q-meta"><span class="q-num-badge">Pregunta 3</span><span class="q-tipo">Verdadero / Falso</span></div>
-    <div class="q-texto">Comprar un NFT asociado a una obra digital implica automáticamente adquirir los derechos de autor de esa obra.</div>
-    <div class="opciones">
-      <div class="opcion" onclick="responder(3,this,'A',false)"><div class="opcion-letra">A</div>Verdadero. Al pagar por el NFT se transfieren todos los derechos sobre la obra.</div>
-      <div class="opcion" onclick="responder(3,this,'B',true)"><div class="opcion-letra">B</div>Falso. Comprar un NFT equivale a adquirir un token de autenticidad, pero los derechos de autor permanecen en el creador salvo cesión expresa.</div>
+  <!-- ===== PREGUNTA 3 ===== -->
+  <div class="screen" id="s3">
+    <div class="qcard">
+      <div class="qmeta"><span class="qbadge">Pregunta 3</span><span class="qtipo">Verdadero / Falso</span></div>
+      <div class="qtexto">Comprar un NFT asociado a una obra digital implica automáticamente adquirir los derechos de autor de esa obra.</div>
+      <div class="ops" id="ops3">
+        <div class="op" onclick="seleccionar(3,this,'A')"><div class="letra">A</div>Verdadero. Al pagar por el NFT se transfieren todos los derechos sobre la obra.</div>
+        <div class="op" onclick="seleccionar(3,this,'B')"><div class="letra">B</div>Falso. Comprar un NFT equivale a adquirir un token de autenticidad; los derechos de autor permanecen en el creador salvo cesión expresa.</div>
+      </div>
+      <div class="retro" id="ret3"></div>
+      <div class="btn-row">
+        <button class="btn btn-confirmar" id="conf3" onclick="confirmar(3,'B')" disabled>Confirmar</button>
+        <button class="btn btn-siguiente" id="sig3" onclick="irA(4)">Siguiente →</button>
+      </div>
     </div>
-    <div class="retro" id="r3"></div>
-    <button class="btn-sig" id="s3" onclick="siguiente(3)">Siguiente pregunta →</button>
   </div>
 
-  <!-- P4 -->
-  <div class="q-card" id="q4">
-    <div class="q-meta"><span class="q-num-badge">Pregunta 4</span><span class="q-tipo">Identificación de licencia</span></div>
-    <div class="q-texto">Un estudiante quiere modificar una fotografía y publicar la versión modificada. ¿Qué licencia Creative Commons le permite hacer esto?</div>
-    <div class="opciones">
-      <div class="opcion" onclick="responder(4,this,'A',false)"><div class="opcion-letra">A</div>CC BY-ND — permite cualquier uso siempre que se cite al autor.</div>
-      <div class="opcion" onclick="responder(4,this,'B',false)"><div class="opcion-letra">B</div>CC BY-NC-ND — uso no comercial sin modificaciones.</div>
-      <div class="opcion" onclick="responder(4,this,'C',true)"><div class="opcion-letra">C</div>CC BY-SA — permite modificar y publicar la versión modificada, siempre con la misma licencia.</div>
-      <div class="opcion" onclick="responder(4,this,'D',false)"><div class="opcion-letra">D</div>CC BY-NC — uso no comercial, sin restricciones para modificar.</div>
+  <!-- ===== PREGUNTA 4 ===== -->
+  <div class="screen" id="s4">
+    <div class="qcard">
+      <div class="qmeta"><span class="qbadge">Pregunta 4</span><span class="qtipo">Identificación de licencia</span></div>
+      <div class="qtexto">Un estudiante quiere modificar una fotografía y publicar la versión modificada. ¿Qué licencia CC se lo permite?</div>
+      <div class="ops" id="ops4">
+        <div class="op" onclick="seleccionar(4,this,'A')"><div class="letra">A</div>CC BY-ND — permite cualquier uso citando al autor.</div>
+        <div class="op" onclick="seleccionar(4,this,'B')"><div class="letra">B</div>CC BY-NC-ND — uso no comercial sin modificaciones.</div>
+        <div class="op" onclick="seleccionar(4,this,'C')"><div class="letra">C</div>CC BY-SA — permite modificar y publicar la versión modificada con la misma licencia.</div>
+        <div class="op" onclick="seleccionar(4,this,'D')"><div class="letra">D</div>CC BY-NC — uso no comercial, sin restricciones para modificar.</div>
+      </div>
+      <div class="retro" id="ret4"></div>
+      <div class="btn-row">
+        <button class="btn btn-confirmar" id="conf4" onclick="confirmar(4,'C')" disabled>Confirmar</button>
+        <button class="btn btn-siguiente" id="sig4" onclick="irA(5)">Siguiente →</button>
+      </div>
     </div>
-    <div class="retro" id="r4"></div>
-    <button class="btn-sig" id="s4" onclick="siguiente(4)">Siguiente pregunta →</button>
   </div>
 
-  <!-- P5 -->
-  <div class="q-card" id="q5">
-    <div class="q-meta"><span class="q-num-badge">Pregunta 5</span><span class="q-tipo">Caso práctico</span></div>
-    <div class="q-texto">¿Qué debería hacer Sofía antes de usar una canción conocida como fondo de un video que publicará en YouTube?</div>
-    <div class="q-caso">Sofía está grabando un video educativo y quiere usar una canción popular como fondo musical. El video será público y gratuito.</div>
-    <div class="opciones">
-      <div class="opcion" onclick="responder(5,this,'A',false)"><div class="opcion-letra">A</div>Publicarlo directamente porque es gratuito y educativo, lo que siempre está permitido.</div>
-      <div class="opcion" onclick="responder(5,this,'B',false)"><div class="opcion-letra">B</div>Bajar el volumen de la canción para que los sistemas automáticos no la detecten.</div>
-      <div class="opcion" onclick="responder(5,this,'C',true)"><div class="opcion-letra">C</div>Verificar si la canción tiene derechos de autor y, si los tiene, buscar música con licencia libre o pedir permiso.</div>
-      <div class="opcion" onclick="responder(5,this,'D',false)"><div class="opcion-letra">D</div>Agregar en la descripción del video "sin fines de lucro" para quedar eximida de cualquier responsabilidad.</div>
+  <!-- ===== PREGUNTA 5 ===== -->
+  <div class="screen" id="s5">
+    <div class="qcard">
+      <div class="qmeta"><span class="qbadge">Pregunta 5</span><span class="qtipo">Caso práctico</span></div>
+      <div class="qtexto">¿Qué debería hacer Sofía antes de usar una canción popular como fondo de un video educativo en YouTube?</div>
+      <div class="qcaso">Sofía graba un video educativo público y gratuito. Quiere usar una canción conocida como fondo musical.</div>
+      <div class="ops" id="ops5">
+        <div class="op" onclick="seleccionar(5,this,'A')"><div class="letra">A</div>Publicarlo directamente porque es gratuito y educativo.</div>
+        <div class="op" onclick="seleccionar(5,this,'B')"><div class="letra">B</div>Bajar el volumen para que los sistemas automáticos no la detecten.</div>
+        <div class="op" onclick="seleccionar(5,this,'C')"><div class="letra">C</div>Verificar si tiene derechos de autor y, si los tiene, buscar música con licencia libre.</div>
+        <div class="op" onclick="seleccionar(5,this,'D')"><div class="letra">D</div>Escribir "sin fines de lucro" en la descripción para quedar eximida.</div>
+      </div>
+      <div class="retro" id="ret5"></div>
+      <div class="btn-row">
+        <button class="btn btn-confirmar" id="conf5" onclick="confirmar(5,'C')" disabled>Confirmar</button>
+        <button class="btn btn-siguiente" id="sig5" onclick="irA(6)">Siguiente →</button>
+      </div>
     </div>
-    <div class="retro" id="r5"></div>
-    <button class="btn-sig" id="s5" onclick="siguiente(5)">Siguiente pregunta →</button>
   </div>
 
-  <!-- P6 -->
-  <div class="q-card" id="q6">
-    <div class="q-meta"><span class="q-num-badge">Pregunta 6</span><span class="q-tipo">Opción múltiple</span></div>
-    <div class="q-texto">¿Cuál de estas prácticas constituye plagio?</div>
-    <div class="opciones">
-      <div class="opcion" onclick="responder(6,this,'A',false)"><div class="opcion-letra">A</div>Citar un fragmento de un artículo entre comillas e indicando la fuente.</div>
-      <div class="opcion" onclick="responder(6,this,'B',false)"><div class="opcion-letra">B</div>Parafrasear una idea de otro autor mencionando de dónde proviene.</div>
-      <div class="opcion" onclick="responder(6,this,'C',true)"><div class="opcion-letra">C</div>Copiar íntegramente un texto de un blog y entregarlo como trabajo propio, aunque se cite la URL al final.</div>
-      <div class="opcion" onclick="responder(6,this,'D',false)"><div class="opcion-letra">D</div>Usar una imagen con licencia CC BY en una presentación y mencionar al autor.</div>
+  <!-- ===== PREGUNTA 6 ===== -->
+  <div class="screen" id="s6">
+    <div class="qcard">
+      <div class="qmeta"><span class="qbadge">Pregunta 6</span><span class="qtipo">Opción múltiple</span></div>
+      <div class="qtexto">¿Cuál de estas prácticas constituye plagio?</div>
+      <div class="ops" id="ops6">
+        <div class="op" onclick="seleccionar(6,this,'A')"><div class="letra">A</div>Citar un fragmento entre comillas e indicando la fuente.</div>
+        <div class="op" onclick="seleccionar(6,this,'B')"><div class="letra">B</div>Parafrasear una idea de otro autor mencionando de dónde proviene.</div>
+        <div class="op" onclick="seleccionar(6,this,'C')"><div class="letra">C</div>Copiar íntegramente un texto de un blog y entregarlo como trabajo propio, aunque se cite la URL al final.</div>
+        <div class="op" onclick="seleccionar(6,this,'D')"><div class="letra">D</div>Usar una imagen CC BY en una presentación y mencionar al autor.</div>
+      </div>
+      <div class="retro" id="ret6"></div>
+      <div class="btn-row">
+        <button class="btn btn-confirmar" id="conf6" onclick="confirmar(6,'C')" disabled>Confirmar</button>
+        <button class="btn btn-siguiente" id="sig6" onclick="irA(7)">Siguiente →</button>
+      </div>
     </div>
-    <div class="retro" id="r6"></div>
-    <button class="btn-sig" id="s6" onclick="siguiente(6)">Siguiente pregunta →</button>
   </div>
 
-  <!-- P7 -->
-  <div class="q-card" id="q7">
-    <div class="q-meta"><span class="q-num-badge">Pregunta 7</span><span class="q-tipo">Análisis de situación</span></div>
-    <div class="q-texto">Un docente crea una presentación para clase, incluye imágenes con licencia CC BY de Wikimedia Commons y agrega al pie de cada imagen el nombre del autor y la fuente. ¿Está actuando correctamente?</div>
-    <div class="opciones">
-      <div class="opcion" onclick="responder(7,this,'A',true)"><div class="opcion-letra">A</div>Sí. Usó imágenes con licencia abierta y respetó la condición de atribución (BY).</div>
-      <div class="opcion" onclick="responder(7,this,'B',false)"><div class="opcion-letra">B</div>No. Para usar imágenes en una presentación siempre hace falta un permiso escrito del autor.</div>
-      <div class="opcion" onclick="responder(7,this,'C',false)"><div class="opcion-letra">C</div>Depende. Solo está bien si la presentación no se comparte fuera del aula.</div>
-      <div class="opcion" onclick="responder(7,this,'D',false)"><div class="opcion-letra">D</div>No. CC BY solo permite uso personal, no educativo.</div>
+  <!-- ===== PREGUNTA 7 ===== -->
+  <div class="screen" id="s7">
+    <div class="qcard">
+      <div class="qmeta"><span class="qbadge">Pregunta 7</span><span class="qtipo">Análisis de situación</span></div>
+      <div class="qtexto">Un docente usa imágenes CC BY de Wikimedia Commons y agrega el nombre del autor y la fuente al pie de cada imagen. ¿Actúa correctamente?</div>
+      <div class="ops" id="ops7">
+        <div class="op" onclick="seleccionar(7,this,'A')"><div class="letra">A</div>Sí. Usó imágenes con licencia abierta y respetó la condición de atribución (BY).</div>
+        <div class="op" onclick="seleccionar(7,this,'B')"><div class="letra">B</div>No. Para usar imágenes siempre hace falta permiso escrito del autor.</div>
+        <div class="op" onclick="seleccionar(7,this,'C')"><div class="letra">C</div>Solo si la presentación no se comparte fuera del aula.</div>
+        <div class="op" onclick="seleccionar(7,this,'D')"><div class="letra">D</div>No. CC BY solo permite uso personal, no educativo.</div>
+      </div>
+      <div class="retro" id="ret7"></div>
+      <div class="btn-row">
+        <button class="btn btn-confirmar" id="conf7" onclick="confirmar(7,'A')" disabled>Confirmar</button>
+        <button class="btn btn-siguiente" id="sig7" onclick="irA(8)">Siguiente →</button>
+      </div>
     </div>
-    <div class="retro" id="r7"></div>
-    <button class="btn-sig" id="s7" onclick="siguiente(7)">Siguiente pregunta →</button>
   </div>
 
-  <!-- P8 -->
-  <div class="q-card" id="q8">
-    <div class="q-meta"><span class="q-num-badge">Pregunta 8</span><span class="q-tipo">Caso NFT</span></div>
-    <div class="q-texto">Rodrigo compra un NFT de una ilustración digital y empieza a vender remeras con esa imagen. ¿Cuál es el problema con esta situación?</div>
-    <div class="opciones">
-      <div class="opcion" onclick="responder(8,this,'A',false)"><div class="opcion-letra">A</div>Ninguno. Al comprar el NFT adquirió todos los derechos sobre la imagen.</div>
-      <div class="opcion" onclick="responder(8,this,'B',true)"><div class="opcion-letra">B</div>Que comprar un NFT no transfiere automáticamente los derechos comerciales. El creador original sigue siendo el titular y Rodrigo necesita una licencia específica para usos comerciales.</div>
-      <div class="opcion" onclick="responder(8,this,'C',false)"><div class="opcion-letra">C</div>Que las remeras son un producto físico y los NFT solo aplican a productos digitales.</div>
-      <div class="opcion" onclick="responder(8,this,'D',false)"><div class="opcion-letra">D</div>Que debería haber comprado el NFT en una plataforma oficial para tener esos derechos.</div>
+  <!-- ===== PREGUNTA 8 ===== -->
+  <div class="screen" id="s8">
+    <div class="qcard">
+      <div class="qmeta"><span class="qbadge">Pregunta 8</span><span class="qtipo">Caso NFT</span></div>
+      <div class="qtexto">Rodrigo compra un NFT de una ilustración digital y empieza a vender remeras con esa imagen. ¿Cuál es el problema?</div>
+      <div class="ops" id="ops8">
+        <div class="op" onclick="seleccionar(8,this,'A')"><div class="letra">A</div>Ninguno. Al comprar el NFT adquirió todos los derechos sobre la imagen.</div>
+        <div class="op" onclick="seleccionar(8,this,'B')"><div class="letra">B</div>Que comprar un NFT no transfiere automáticamente los derechos comerciales. Necesita una licencia específica del creador.</div>
+        <div class="op" onclick="seleccionar(8,this,'C')"><div class="letra">C</div>Que las remeras son un producto físico y los NFT solo aplican a lo digital.</div>
+        <div class="op" onclick="seleccionar(8,this,'D')"><div class="letra">D</div>Que debería haberlo comprado en una plataforma oficial para tener esos derechos.</div>
+      </div>
+      <div class="retro" id="ret8"></div>
+      <div class="btn-row">
+        <button class="btn btn-confirmar" id="conf8" onclick="confirmar(8,'B')" disabled>Confirmar</button>
+        <button class="btn btn-siguiente" id="sig8" onclick="irA(9)">Siguiente →</button>
+      </div>
     </div>
-    <div class="retro" id="r8"></div>
-    <button class="btn-sig" id="s8" onclick="siguiente(8)">Siguiente pregunta →</button>
   </div>
 
-  <!-- P9 -->
-  <div class="q-card" id="q9">
-    <div class="q-meta"><span class="q-num-badge">Pregunta 9</span><span class="q-tipo">Legislación uruguaya</span></div>
-    <div class="q-texto">En Uruguay, ¿qué ley protege los derechos de autor sobre creaciones literarias, científicas y artísticas?</div>
-    <div class="opciones">
-      <div class="opcion" onclick="responder(9,this,'A',false)"><div class="opcion-letra">A</div>Ley N.° 18.331 — Ley de protección de datos personales.</div>
-      <div class="opcion" onclick="responder(9,this,'B',false)"><div class="opcion-letra">B</div>Ley N.° 17.838 — Ley de privacidad.</div>
-      <div class="opcion" onclick="responder(9,this,'C',true)"><div class="opcion-letra">C</div>Ley N.° 9.739 — Ley de derechos de autor.</div>
-      <div class="opcion" onclick="responder(9,this,'D',false)"><div class="opcion-letra">D</div>Ley N.° 19.307 — Ley de medios de comunicación.</div>
+  <!-- ===== PREGUNTA 9 ===== -->
+  <div class="screen" id="s9">
+    <div class="qcard">
+      <div class="qmeta"><span class="qbadge">Pregunta 9</span><span class="qtipo">Legislación uruguaya</span></div>
+      <div class="qtexto">En Uruguay, ¿qué ley protege los derechos de autor sobre creaciones literarias, científicas y artísticas?</div>
+      <div class="ops" id="ops9">
+        <div class="op" onclick="seleccionar(9,this,'A')"><div class="letra">A</div>Ley N.° 18.331 — Protección de datos personales.</div>
+        <div class="op" onclick="seleccionar(9,this,'B')"><div class="letra">B</div>Ley N.° 17.838 — Privacidad de la información.</div>
+        <div class="op" onclick="seleccionar(9,this,'C')"><div class="letra">C</div>Ley N.° 9.739 — Derechos de autor.</div>
+        <div class="op" onclick="seleccionar(9,this,'D')"><div class="letra">D</div>Ley N.° 19.307 — Servicios de comunicación audiovisual.</div>
+      </div>
+      <div class="retro" id="ret9"></div>
+      <div class="btn-row">
+        <button class="btn btn-confirmar" id="conf9" onclick="confirmar(9,'C')" disabled>Confirmar</button>
+        <button class="btn btn-siguiente" id="sig9" onclick="irA(10)">Siguiente →</button>
+      </div>
     </div>
-    <div class="retro" id="r9"></div>
-    <button class="btn-sig" id="s9" onclick="siguiente(9)">Siguiente pregunta →</button>
   </div>
 
-  <!-- P10 -->
-  <div class="q-card" id="q10">
-    <div class="q-meta"><span class="q-num-badge">Pregunta 10</span><span class="q-tipo">Síntesis final</span></div>
-    <div class="q-texto">¿Cuál de estas afirmaciones resume mejor el concepto de ciudadanía digital responsable trabajado en este curso?</div>
-    <div class="opciones">
-      <div class="opcion" onclick="responder(10,this,'A',false)"><div class="opcion-letra">A</div>Ser ciudadano digital significa tener acceso a internet y saber usar sus herramientas técnicas.</div>
-      <div class="opcion" onclick="responder(10,this,'B',false)"><div class="opcion-letra">B</div>Ser ciudadano digital implica evitar publicar cualquier contenido para no infringir derechos de autor.</div>
-      <div class="opcion" onclick="responder(10,this,'C',false)"><div class="opcion-letra">C</div>Ser ciudadano digital es usar internet solo con fines educativos y nunca con fines personales.</div>
-      <div class="opcion" onclick="responder(10,this,'D',true)"><div class="opcion-letra">D</div>Ser ciudadano digital implica usar, crear y compartir contenidos con respeto, responsabilidad y pensamiento crítico, conociendo los derechos y obligaciones que eso conlleva.</div>
+  <!-- ===== PREGUNTA 10 ===== -->
+  <div class="screen" id="s10">
+    <div class="qcard">
+      <div class="qmeta"><span class="qbadge">Pregunta 10</span><span class="qtipo">Síntesis final</span></div>
+      <div class="qtexto">¿Cuál de estas afirmaciones resume mejor el concepto de ciudadanía digital responsable trabajado en este curso?</div>
+      <div class="ops" id="ops10">
+        <div class="op" onclick="seleccionar(10,this,'A')"><div class="letra">A</div>Ser ciudadano digital significa tener acceso a internet y saber usar sus herramientas técnicas.</div>
+        <div class="op" onclick="seleccionar(10,this,'B')"><div class="letra">B</div>Ser ciudadano digital implica evitar publicar cualquier contenido para no infringir derechos.</div>
+        <div class="op" onclick="seleccionar(10,this,'C')"><div class="letra">C</div>Ser ciudadano digital es usar internet únicamente con fines educativos.</div>
+        <div class="op" onclick="seleccionar(10,this,'D')"><div class="letra">D</div>Ser ciudadano digital implica usar, crear y compartir contenidos con respeto, responsabilidad y pensamiento crítico, conociendo derechos y obligaciones.</div>
+      </div>
+      <div class="retro" id="ret10"></div>
+      <div class="btn-row">
+        <button class="btn btn-confirmar" id="conf10" onclick="confirmar(10,'D')" disabled>Confirmar</button>
+        <button class="btn btn-resultado" id="sig10" onclick="mostrarResultado()">Ver mi resultado →</button>
+      </div>
     </div>
-    <div class="retro" id="r10"></div>
-    <button class="btn-sig" id="s10" onclick="mostrarResultado()">Ver mi resultado →</button>
   </div>
 
-  <!-- RESULTADO -->
-  <div class="resultado" id="resultado">
-    <div class="res-circulo">
-      <div class="res-pts" id="resPts">0</div>
-      <div class="res-total">de 10</div>
+  <!-- ===== RESULTADO ===== -->
+  <div class="screen" id="sRes">
+    <div class="res-hero">
+      <div class="res-circulo">
+        <div class="res-pts" id="resPts">0</div>
+        <div class="res-de">de 10</div>
+      </div>
+      <div class="res-titulo" id="resTitulo"></div>
+      <div class="res-msg" id="resMsg"></div>
     </div>
-    <div class="res-titulo" id="resTitulo"></div>
-    <div class="res-mensaje" id="resMensaje"></div>
-    <div class="res-breakdown" id="resBreakdown"></div>
-    <button class="btn-reiniciar" onclick="reiniciar()">↺ Volver a intentar</button>
+    <div class="detalle">
+      <div class="det-header">Detalle de respuestas</div>
+      <div id="detItems"></div>
+    </div>
+    <div style="text-align:center">
+      <button class="btn-reiniciar" onclick="reiniciar()">↺ Volver a intentar</button>
+    </div>
   </div>
+
+  <div class="footer">Laura Castro - Vanessa Ingold - Analía Sáenz - Malena Sánchez</div>
 
 </div>
 
 <script>
+// ---- SCORM 1.2 ----
+var scormAPI = null;
+function findAPI(win){
+  var tries=0;
+  while(win.API==null && tries<10){
+    if(win.parent==null||win.parent==win) return null;
+    win=win.parent; tries++;
+  }
+  return win.API;
+}
+function initSCORM(){
+  scormAPI=findAPI(window);
+  if(!scormAPI && window.opener) scormAPI=findAPI(window.opener);
+  if(scormAPI){
+    scormAPI.LMSInitialize("");
+    scormAPI.LMSSetValue("cmi.core.lesson_status","incomplete");
+  }
+}
+function setSCORMScore(raw,min,max){
+  if(!scormAPI) return;
+  scormAPI.LMSSetValue("cmi.core.score.raw",raw);
+  scormAPI.LMSSetValue("cmi.core.score.min",min);
+  scormAPI.LMSSetValue("cmi.core.score.max",max);
+  scormAPI.LMSSetValue("cmi.core.lesson_status", raw>=6 ? "passed" : "failed");
+  scormAPI.LMSCommit("");
+  scormAPI.LMSFinish("");
+}
+window.onload = initSCORM;
+
+// ---- DATOS ----
+const correctas = {1:'C',2:'B',3:'B',4:'C',5:'C',6:'C',7:'A',8:'B',9:'C',10:'D'};
 const retros = {
-  1:{
-    ok:"Correcto. En ausencia de licencia explícita, la ley presume que todos los derechos están reservados. No podés usar ese contenido libremente sin permiso del autor.",
-    err:"No es esa opción. Sin licencia explícita, la ley presume que el contenido tiene todos los derechos reservados. Que algo esté publicado en internet no lo convierte en de uso libre."
-  },
-  2:{
-    ok:"Muy bien. CC BY-NC permite el uso no comercial citando al autor. Una presentación gratuita para clase cumple ambas condiciones perfectamente.",
-    err:"No es la correcta. CC BY-NC tiene dos condiciones: BY (citar al autor) y NC (no comercial). La respuesta correcta es la presentación gratuita con atribución, porque respeta ambas condiciones."
-  },
-  3:{
-    ok:"Correcto. Un NFT es un certificado de autenticidad digital. Los derechos de autor son independientes y permanecen en el creador original salvo que los ceda explícitamente.",
-    err:"Incorrecto. Esta es una confusión muy común. Comprar un NFT no transfiere los derechos de autor. El creador sigue siendo el titular de la obra, incluso si vende el token."
-  },
-  4:{
-    ok:"Correcto. CC BY-SA (Compartir Igual) permite modificar y publicar la versión adaptada, siempre que la nueva versión use la misma licencia. CC BY-ND prohíbe modificaciones.",
-    err:"No es esa. ND significa 'sin obras derivadas' (no se puede modificar). CC BY-SA es la que permite modificar y republicar con la misma licencia."
-  },
-  5:{
-    ok:"Exacto. El uso educativo y gratuito no exime automáticamente del derecho de autor. YouTube tiene sistemas que detectan música protegida. Lo correcto es verificar antes de publicar.",
-    err:"No es la correcta. El uso educativo no es una carta libre para usar cualquier música. YouTube detecta contenido protegido automáticamente. Siempre hay que verificar los permisos antes de publicar."
-  },
-  6:{
-    ok:"Correcto. Copiar un texto íntegramente y presentarlo como propio es plagio aunque se cite la URL. Un trabajo propio implica elaboración personal, no copia directa.",
-    err:"No es esa. El plagio es copiar el trabajo de otro y presentarlo como propio. Citar la URL al final no convierte una copia íntegra en trabajo original."
-  },
-  7:{
-    ok:"Perfecto. CC BY solo exige atribución. El docente verificó la licencia, la respetó y citó correctamente. Eso es exactamente el uso responsable de recursos con licencia abierta.",
-    err:"No es correcta. CC BY solo exige mencionar al autor. El docente hizo exactamente eso. No necesita permiso escrito adicional ni tiene restricciones de uso educativo."
-  },
-  8:{
-    ok:"Correcto. La compra de un NFT no transfiere los derechos comerciales sobre la obra. Para vender productos con esa imagen, Rodrigo necesita una licencia específica del creador original.",
-    err:"No es esa. El problema central es que comprar un NFT no otorga automáticamente derechos comerciales. El creador sigue siendo el titular y puede reclamar por ese uso."
-  },
-  9:{
-    ok:"Correcto. La Ley N.° 9.739 es la ley uruguaya de derechos de autor, promulgada en 1937 y actualizada posteriormente, que protege las creaciones del espíritu en sus diversas formas.",
-    err:"No es esa. La ley que protege los derechos de autor en Uruguay es la N.° 9.739. Las otras opciones corresponden a leyes de privacidad y medios de comunicación."
-  },
-  10:{
-    ok:"Excelente. Esa es la síntesis del curso: la ciudadanía digital no es solo habilidad técnica sino una práctica ética, crítica y responsable en todos los entornos digitales.",
-    err:"No es la más completa. La ciudadanía digital no se limita a saber usar herramientas ni a evitar todo uso de contenidos. Implica actuar con responsabilidad, respeto y pensamiento crítico conociendo derechos y obligaciones."
-  }
+  1:{ok:"Correcto. En ausencia de licencia la ley presume derechos reservados. Que algo esté en internet no lo convierte en de uso libre.",err:"No es esa. Sin licencia explícita la ley presume derechos reservados. Revisá el Módulo 1."},
+  2:{ok:"Muy bien. CC BY-NC exige atribución (BY) y prohíbe uso comercial (NC). Una presentación gratuita con atribución cumple ambas condiciones.",err:"No es la correcta. CC BY-NC exige BY (citar al autor) y NC (no comercial). Revisá la tabla de licencias en el Módulo 2."},
+  3:{ok:"Correcto. Un NFT es un certificado de autenticidad digital. Los derechos de autor permanecen en el creador salvo cesión expresa.",err:"Incorrecto. Comprar un NFT no transfiere los derechos de autor. El creador sigue siendo el titular. Revisá el Módulo 3."},
+  4:{ok:"Correcto. CC BY-SA permite modificar y publicar con la misma licencia. ND significa 'sin obras derivadas' y prohíbe modificaciones.",err:"No es esa. ND prohíbe modificar. La licencia que permite modificar y compartir es CC BY-SA. Revisá el Módulo 2."},
+  5:{ok:"Exacto. El uso educativo y gratuito no exime del derecho de autor. YouTube detecta música protegida automáticamente.",err:"No es la correcta. El uso educativo no es una carta libre para usar cualquier música. Revisá los casos del Módulo 1."},
+  6:{ok:"Correcto. Copiar un texto íntegro y presentarlo como propio es plagio aunque se cite la URL. Un trabajo propio implica elaboración personal.",err:"No es esa. El plagio es presentar el trabajo ajeno como propio. Citar la URL no convierte una copia en trabajo original."},
+  7:{ok:"Perfecto. CC BY solo exige mencionar al autor. El docente verificó la licencia y la respetó. Eso es uso responsable.",err:"No es correcta. CC BY solo exige mencionar al autor, que es exactamente lo que hizo el docente."},
+  8:{ok:"Correcto. Un NFT no transfiere los derechos comerciales. El creador sigue siendo el titular y Rodrigo necesita una licencia específica.",err:"No es esa. Comprar un NFT no otorga derechos comerciales automáticamente. Revisá el Módulo 3."},
+  9:{ok:"Correcto. La Ley N.° 9.739 es la ley uruguaya de derechos de autor.",err:"No es esa. La ley de derechos de autor en Uruguay es la N.° 9.739. Las otras son de privacidad y medios."},
+  10:{ok:"Excelente. La ciudadanía digital es una práctica ética, crítica y responsable, no solo habilidad técnica.",err:"No es la más completa. La ciudadanía digital implica actuar con responsabilidad y pensamiento crítico conociendo derechos y obligaciones."}
 };
+const etiquetas={1:"Una imagen sin licencia",2:"Licencia CC BY-NC",3:"NFT y derechos de autor",4:"Licencia para modificar",5:"Música en YouTube",6:"Plagio",7:"CC BY aplicado",8:"NFT y uso comercial",9:"Ley 9.739 Uruguay",10:"Ciudadanía digital"};
 
+let seleccionadas={};
+let confirmadas={};
 let puntaje=0;
-let respondidas={};
-const total=10;
+let preguntaActual=1;
 
-function responder(num,el,letra,esCorrecta){
-  if(respondidas[num]) return;
-  respondidas[num]=true;
-
-  const card=document.getElementById('q'+num);
-  const opciones=card.querySelectorAll('.opcion');
-  opciones.forEach(o=>o.classList.add('disabled'));
-
-  const retro=document.getElementById('r'+num);
-  const sig=document.getElementById('s'+num);
-
-  if(esCorrecta){
-    el.classList.add('marcada-ok');
-    retro.className='retro ok';
-    retro.innerHTML='<div class="retro-titulo">✓ Correcto</div>'+retros[num].ok;
-    puntaje++;
-  } else {
-    el.classList.add('marcada-err');
-    retro.className='retro err';
-    retro.innerHTML='<div class="retro-titulo">✗ No es la correcta</div>'+retros[num].err;
-    // resaltar correcta
-    opciones.forEach(o=>{
-      const onclick=o.getAttribute('onclick')||'';
-      if(onclick.includes(',true)')){
-        o.classList.add('correcta');
-      }
-    });
-  }
-
-  retro.style.display='block';
-  sig.style.display='block';
-  actualizarProgreso(num);
+function seleccionar(num,el,letra){
+  if(confirmadas[num]) return;
+  const ops=document.querySelectorAll('#ops'+num+' .op');
+  ops.forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  seleccionadas[num]=letra;
+  document.getElementById('conf'+num).disabled=false;
 }
 
-function siguiente(actual){
-  document.getElementById('q'+actual).classList.remove('active');
-  const sig=actual+1;
-  if(sig<=total){
-    document.getElementById('q'+sig).classList.add('active');
-    actualizarProgreso(sig);
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
+function confirmar(num,correcta){
+  if(confirmadas[num]) return;
+  confirmadas[num]=true;
+  const sel=seleccionadas[num];
+  const esOk=(sel===correcta);
+  if(esOk) puntaje++;
+
+  const ops=document.querySelectorAll('#ops'+num+' .op');
+  ops.forEach(o=>{
+    o.classList.add('disabled');
+    const letra=o.querySelector('.letra').textContent.trim();
+    if(letra===correcta) o.classList.add('correcta');
+    else if(letra===sel && !esOk) o.classList.add('incorrecta-sel');
+  });
+
+  const ret=document.getElementById('ret'+num);
+  ret.className='retro '+(esOk?'ok':'err');
+  ret.innerHTML='<div class="retro-t">'+(esOk?'✓ Correcto':'✗ No es la correcta')+'</div>'+(esOk?retros[num].ok:retros[num].err);
+  ret.style.display='block';
+
+  document.getElementById('conf'+num).style.display='none';
+
+  const sigBtn=document.getElementById('sig'+num);
+  sigBtn.style.display='inline-block';
+
+  actualizarProg(num);
 }
 
-function actualizarProgreso(num){
-  const respondidas_count=Object.keys(respondidas).length;
-  const pct=(respondidas_count/total)*100;
-  document.getElementById('progBar').style.width=pct+'%';
-  if(num<=total && !respondidas[num]){
-    document.getElementById('progCount').textContent='Pregunta '+num+' de '+total;
+function irA(num){
+  document.getElementById('s'+(num-1)).classList.remove('active');
+  document.getElementById('s'+num).classList.add('active');
+  preguntaActual=num;
+  actualizarProg(num);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function actualizarProg(num){
+  const hecho=Object.keys(confirmadas).length;
+  document.getElementById('progBar').style.width=(hecho/10*100)+'%';
+  if(confirmadas[num]){
+    document.getElementById('progNum').textContent=hecho+' de 10 respondidas';
   } else {
-    document.getElementById('progCount').textContent=respondidas_count+' de '+total+' respondidas';
+    document.getElementById('progNum').textContent='Pregunta '+num+' de 10';
   }
 }
 
 function mostrarResultado(){
-  document.getElementById('q10').classList.remove('active');
-  const res=document.getElementById('resultado');
-  res.style.display='block';
+  document.getElementById('s10').classList.remove('active');
+  document.getElementById('sRes').classList.add('active');
   document.getElementById('progBar').style.width='100%';
-  document.getElementById('progCount').textContent='Completado · '+puntaje+'/'+total;
-
+  document.getElementById('progNum').textContent='Completado · '+puntaje+'/10';
   document.getElementById('resPts').textContent=puntaje;
 
-  let titulo,mensaje;
-  if(puntaje>=9){
-    titulo='¡Excelente resultado!';
-    mensaje='Demostraste una comprensión sólida de los derechos digitales, las licencias Creative Commons, la propiedad digital y los NFT. Estás muy bien preparado/a para aplicar estos conocimientos en tu práctica docente.';
-  } else if(puntaje>=7){
-    titulo='Muy buen trabajo';
-    mensaje='Comprendés los conceptos centrales del curso. Te recomendamos repasar las preguntas donde tuviste dificultades para afianzar los puntos más específicos.';
-  } else if(puntaje>=5){
-    titulo='Buen comienzo';
-    mensaje='Tenés una base, pero hay algunos conceptos que vale la pena repasar con más detalle, especialmente sobre licencias Creative Commons y NFT. Te recomendamos volver al material de lectura.';
-  } else {
-    titulo='Seguí intentando';
-    mensaje='Hay varios conceptos del curso que necesitan más atención. Te recomendamos releer los módulos, especialmente los de licencias y propiedad digital, y volver a intentar el cuestionario.';
-  }
+  let titulo,msg;
+  if(puntaje>=9){titulo='¡Excelente resultado!';msg='Demostraste una comprensión sólida de los derechos digitales, licencias Creative Commons, NFT y ciudadanía digital. Estás muy bien preparado/a.';}
+  else if(puntaje>=7){titulo='Muy buen trabajo';msg='Comprendés los conceptos centrales. Revisá las preguntas donde tuviste dificultades para afianzar los detalles.';}
+  else if(puntaje>=5){titulo='Buen comienzo';msg='Tenés una base, pero vale repasar especialmente licencias Creative Commons y NFT. Te recomendamos volver al material.';}
+  else{titulo='Seguí intentando';msg='Hay varios conceptos que necesitan más atención. Releé los módulos, especialmente el de licencias y propiedad digital.';}
 
   document.getElementById('resTitulo').textContent=titulo;
-  document.getElementById('resMensaje').textContent=mensaje;
+  document.getElementById('resMsg').textContent=msg;
 
-  const temas=[
-    {t:'Derecho de autor y uso libre',qs:[1,6]},
-    {t:'Licencias Creative Commons',qs:[2,4,7]},
-    {t:'NFT y propiedad digital',qs:[3,8]},
-    {t:'Situaciones prácticas',qs:[5]},
-    {t:'Marco legal y síntesis',qs:[9,10]}
-  ];
+  let det='';
+  for(let i=1;i<=10;i++){
+    const ok=seleccionadas[i]===correctas[i];
+    det+=`<div class="det-item"><span class="det-q">${i}. ${etiquetas[i]}</span><span class="${ok?'det-ok':'det-err'}">${ok?'✓ Correcta':'✗ Incorrecta'}</span></div>`;
+  }
+  document.getElementById('detItems').innerHTML=det;
 
-  let bd='<div class="rb-titulo">Resultado por tema</div>';
-  temas.forEach(tema=>{
-    const correctas=tema.qs.filter(q=>respondidas[q]).length; // simplificado
-    bd+=`<div class="rb-item"><span class="rb-item-label">${tema.t}</span><span class="rb-item-val">${tema.qs.join(', ')} →</span></div>`;
-  });
-  document.getElementById('resBreakdown').innerHTML=bd;
-
+  setSCORMScore(puntaje,0,10);
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function reiniciar(){
-  puntaje=0;
-  respondidas={};
-  for(let i=1;i<=total;i++){
-    const card=document.getElementById('q'+i);
-    card.classList.remove('active');
-    card.querySelectorAll('.opcion').forEach(o=>{
-      o.classList.remove('disabled','marcada-ok','marcada-err','correcta','incorrecta');
-    });
-    document.getElementById('r'+i).style.display='none';
-    document.getElementById('s'+i).style.display='none';
+  seleccionadas={};confirmadas={};puntaje=0;preguntaActual=1;
+  for(let i=1;i<=10;i++){
+    document.getElementById('s'+i).classList.remove('active');
+    const ops=document.querySelectorAll('#ops'+i+' .op');
+    ops.forEach(o=>o.classList.remove('selected','disabled','correcta','incorrecta-sel'));
+    document.getElementById('ret'+i).style.display='none';
+    const conf=document.getElementById('conf'+i);
+    conf.disabled=true;conf.style.display='inline-block';
+    document.getElementById('sig'+i).style.display='none';
   }
-  document.getElementById('resultado').style.display='none';
-  document.getElementById('q1').classList.add('active');
+  document.getElementById('sRes').classList.remove('active');
+  document.getElementById('s1').classList.add('active');
   document.getElementById('progBar').style.width='0%';
-  document.getElementById('progCount').textContent='Pregunta 1 de 10';
+  document.getElementById('progNum').textContent='Pregunta 1 de 10';
+  if(scormAPI){
+    scormAPI.LMSInitialize("");
+    scormAPI.LMSSetValue("cmi.core.lesson_status","incomplete");
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
